@@ -1,0 +1,49 @@
+F2015 = LOAD 'project/input/Fall2015.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage() AS (Departmentname:Chararray, Degree:Chararray, MajorName:Chararray,	ConcentrationName:Chararray, Studentlevel:Chararray,	StudentGender:Chararray, StudentRace:Chararray, StudentOrigin:Chararray, StudentAverageGrade:Float);
+
+F2015 = filter F2015 by $0 != 'Year';
+F2015 = filter F2015 by $0 != 'Semester';
+F2015 = filter F2015 by $0 != '';
+F2015 = filter F2015 by $0 != 'College';
+F2015 = filter F2015 by $0 != 'DepartmentName';
+F2015 = filter F2015 by $1 != '';
+
+F2015 = FOREACH F2015 GENERATE Departmentname, Degree, MajorName,ConcentrationName,Studentlevel, StudentGender, StudentRace, StudentOrigin, StudentAverageGrade, 'Fall2015' AS (semester:chararray);
+
+S2015 = LOAD 'project/input/Fall2015.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage() AS (Departmentname:Chararray, Degree:Chararray, MajorName:Chararray,	ConcentrationName:Chararray, Studentlevel:Chararray,	StudentGender:Chararray, StudentRace:Chararray, StudentOrigin:Chararray, StudentAverageGrade:Float);
+
+S2015 = filter S2015 by $0 != 'Year';
+S2015 = filter S2015 by $0 != 'Semester';
+S2015 = filter S2015 by $0 != '';
+S2015 = filter S2015 by $0 != 'College';
+S2015 = filter S2015 by $0 != 'DepartmentName';
+S2015 = filter S2015 by $1 != '';
+
+S2015 = FOREACH S2015 GENERATE Departmentname, Degree, MajorName,ConcentrationName,Studentlevel, StudentGender, StudentRace, StudentOrigin, StudentAverageGrade, 'Spring2015' AS (semester:chararray);
+
+F2016 = LOAD 'project/input/Fall2015.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage() AS (Departmentname:Chararray, Degree:Chararray, MajorName:Chararray,	ConcentrationName:Chararray, Studentlevel:Chararray,	StudentGender:Chararray, StudentRace:Chararray, StudentOrigin:Chararray, StudentAverageGrade:Float);
+
+F2016 = filter F2016 by $0 != 'Year';
+F2016 = filter F2016 by $0 != 'Semester';
+F2016 = filter F2016 by $0 != '';
+F2016 = filter F2016 by $0 != 'College';
+F2016 = filter F2016 by $0 != 'Departmentname';
+F2016 = filter F2016 by $1 != '';
+
+F2016 = FOREACH F2016 GENERATE Departmentname, Degree, MajorName,ConcentrationName,Studentlevel, StudentGender, StudentRace, StudentOrigin, StudentAverageGrade, 'Fall2016' AS (semester:chararray);
+
+S2016 = LOAD 'project/input/Fall2015.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage() AS (Departmentname:Chararray, Degree:Chararray, MajorName:Chararray,	ConcentrationName:Chararray, Studentlevel:Chararray,	StudentGender:Chararray, StudentRace:Chararray, StudentOrigin:Chararray, StudentAverageGrade:Float);
+
+S2016 = filter S2016 by $0 != 'Year';
+S2016 = filter S2016 by $0 != 'Semester';
+S2016 = filter S2016 by $0 != '';
+S2016 = filter S2016 by $0 != 'College';
+S2016 = filter S2016 by $0 != 'Departmentname';
+S2016 = filter S2016 by $1 != '';
+
+S2016 = FOREACH S2016 GENERATE Departmentname, Degree, MajorName,ConcentrationName,Studentlevel, StudentGender, StudentRace, StudentOrigin, StudentAverageGrade, 'Spring2016' AS (semester:chararray);
+
+studentpopulation = UNION F2015, S2015, F2016, S2016;
+
+pop_by_year = GROUP studentpopulation BY semester;
+pop_by_year_stats = FOREACH pop_by_year GENERATE COUNT(studentpopulation), group;
+
