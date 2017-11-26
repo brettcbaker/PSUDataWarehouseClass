@@ -44,4 +44,4 @@ S2016 = FOREACH S2016 GENERATE Departmentname, Degree, MajorName,ConcentrationNa
 
 studentpopulation = UNION F2015, S2015, F2016, S2016;
 
-store studentpopulation into 'project2/output/data'
+store studentpopulation into 'project2/output/data';
