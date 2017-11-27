@@ -1,0 +1,8 @@
+#Copy Data to local system
+hadoop fs -get /user/root/project2/output/data/ /tmp/
+
+#Exit Hadoop
+exit
+
+#Copy data to local folder
+docker cp 0ba07a3151ab:/tmp/data temp/data
