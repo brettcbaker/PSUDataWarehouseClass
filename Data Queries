@@ -1,0 +1,15 @@
+resultsgroup1 = GROUP studentpopulation BY (year, StudentGender);
+results1 = FOREACH resultsgroup1 GENERATE COUNT(studentpopulation), group;
+
+resultsgroup2 = GROUP studentpopulation BY (year, StudentRace);
+results2 = FOREACH resultsgroup2 GENERATE COUNT(studentpopulation), group;
+
+freshmanfilter = FILTER studentpopulation by Studentlevel == 'Freshman';
+resultsgroup3 = GROUP freshmanfilter BY (year, StudentRace);
+results3 = FOREACH resultsgroup3 GENERATE COUNT(freshmanfilter), group;
+
+resultsgroup4 = GROUP studentpopulation BY (year, StudentOrigin);
+results4 = FOREACH resultsgroup4 GENERATE COUNT(studentpopulation), group;
+
+resultsgroup5 = GROUP studentpopulation BY (year, Departmentname);
+results5 = FOREACH resultsgroup5 GENERATE COUNT(studentpopulation), group;
