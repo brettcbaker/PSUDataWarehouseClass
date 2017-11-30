@@ -13,3 +13,9 @@ results4 = FOREACH resultsgroup4 GENERATE COUNT(studentpopulation), group;
 
 resultsgroup5 = GROUP studentpopulation BY (year, Departmentname);
 results5 = FOREACH resultsgroup5 GENERATE COUNT(studentpopulation), group;
+
+store results1 into 'project2/output/results1';
+store results2 into 'project2/output/results2';
+store results3 into 'project2/output/results3';
+store results4 into 'project2/output/results4';
+store results5 into 'project2/output/results5';
