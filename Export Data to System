@@ -1,8 +1,16 @@
 #Copy Data to local system
-hadoop fs -get /user/root/project2/output/data/ /tmp/
+hadoop fs -get /user/root/project2/output/results1/ /tmp/
+hadoop fs -get /user/root/project2/output/results2/ /tmp/
+hadoop fs -get /user/root/project2/output/results3/ /tmp/
+hadoop fs -get /user/root/project2/output/results4/ /tmp/
+hadoop fs -get /user/root/project2/output/results5/ /tmp/
 
 #Exit Hadoop
 exit
 
 #Copy data to local folder
-docker cp 0ba07a3151ab:/tmp/data temp/data
+docker cp 0ba07a3151ab:/tmp/results1 /temp/data
+docker cp 0ba07a3151ab:/tmp/results2 /temp/data
+docker cp 0ba07a3151ab:/tmp/results3 /temp/data
+docker cp 0ba07a3151ab:/tmp/results4 /temp/data
+docker cp 0ba07a3151ab:/tmp/results5 /temp/data
