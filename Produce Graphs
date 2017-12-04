@@ -1,0 +1,93 @@
+produce_graphs <- function(file_path = "C:/temp/data/"){
+  
+  require(dplyr)
+  require(ggplot2)
+
+  #Produce Results Graph 1
+  result1 <- read.table(textConnection(gsub(",", "\t", readLines(paste0(file_path,"results1/part-r-00000")))))
+  result1$V2 <-  gsub("\\(","",result1$V2)
+  result1$V3 <-  gsub("\\)","",result1$V3)
+  result1 <- result1[-grep("StudentGender",result1$V3),]
+  colnames(result1) <- c("Student Count", "Year", "Gender")
+  result1plot <- ggplot(result1, aes(x = Year, y = `Student Count`, fill = Gender)) + 
+    geom_bar(stat = "identity", position = "dodge") + theme_bw() +
+    geom_text(aes(label = `Student Count`, hjust = 0), position = position_dodge(width = 0.9), angle = 90)  +
+    scale_y_continuous(expand = c(0,0), limits = c(0, max(result1$`Student Count`) * 1.15))
+  ggsave("Results1.pdf", path = paste0(file_path,"results1/"))
+
+  #Produce Results Graph 2
+  result2 <- readLines(textConnection(gsub(",", "\t", readLines(paste0(file_path,"results2/part-r-00000")))))
+  result2 <-  data.frame(do.call(rbind, strsplit(result2, "\t", fixed=TRUE)))
+  result2$X2 <-  gsub("\\(","",result2$X2)
+  result2$X3 <-  gsub("\\)","",result2$X3)
+  result2 <- result2[-grep("StudentRace",result2$X3),]
+  result2$X1 <- as.integer(as.character(result2$X1))
+  result2 <- result2 %>%
+    group_by(X2, X3) %>%     
+    summarise(Sum = sum(X1)) %>%
+    mutate(Percent = Sum / sum(Sum))  
+  colnames(result2) <- c("Year", "Race", "Sum", "Percent")
+  result2plot <- ggplot() + geom_bar(aes(y = Percent, x = Year, fill = Race), data = result2, stat="identity") + theme_bw()
+  ggsave("Results2.pdf", path = paste0(file_path,"results2/"))  
+  
+  
+  #Produce Results Graph 3
+  result3 <- readLines(textConnection(gsub(",", "\t", readLines(paste0(file_path,"results3/part-r-00000")))))
+  result3 <-  data.frame(do.call(rbind, strsplit(result3, "\t", fixed=TRUE)))
+  result3$X2 <-  gsub("\\(","",result3$X2)
+  result3$X3 <-  gsub("\\)","",result3$X3)
+  result3$X1 <- as.integer(as.character(result3$X1))
+  result315 <- result3 %>%
+    filter(X2 == "2015") %>%
+    group_by(X3) %>%     
+    summarise(Sum = sum(X1)) %>%
+    mutate(Percent = round(Sum * 100 / sum(Sum),2))    
+  result316 <- result3 %>%
+    filter(X2 == "2016") %>%
+    group_by(X3) %>%     
+    summarise(Sum = sum(X1)) %>%
+    mutate(Percent = round(Sum * 100 / sum(Sum),2)) 
+  
+  labs<- paste(result315$X3, "\t", paste0(result315$Percent,"%"), sep="")
+  pdf(paste0(file_path,"results3/pie15.pdf"))
+  pie15 <- pie(result315$Percent, labels = labs, radius = .9, cex = 0.4)
+  dev.off()
+  
+  pdf(paste0(file_path,"results3/pie16.pdf"))
+  pie16 <- pie(result316$Percent, labels = labs, radius = .9, cex = 0.4)
+  dev.off()
+  
+  #Produce Results Graph 4
+  result4 <- readLines(textConnection(gsub(",", "\t", readLines(paste0(file_path,"results4/part-r-00000"))))) 
+  result4 <-  data.frame(do.call(rbind, strsplit(result4, "\t", fixed=TRUE)))
+  result4$X2 <-  gsub("\\(","",result4$X2)
+  result4$X3 <-  gsub("\\)","",result4$X3)
+  result4$X1 <- as.integer(as.character(result4$X1))
+  result4 <- head(result4[order(result4$X1, decreasing= T),],n = round(nrow(result4)*.20,0))
+  colnames(result4) <- c("Student Count", "Year", "Origin")
+  result4plot <- ggplot(result4, aes(x = Origin, y = `Student Count`, fill = Year)) + geom_bar(stat = "identity", position = "dodge") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+  ggsave("Results4.pdf", path = paste0(file_path,"results4/"))  
+
+  #Produce Results Graph 5
+  result5 <- readLines(textConnection(gsub(",", "\t", readLines(paste0(file_path,"results5/part-r-00000")))))
+  result5 <-  data.frame(do.call(rbind, strsplit(result5, "\t", fixed=TRUE)))
+  result5$X2 <-  gsub("\\(","",result5$X2)
+  result5$X3 <-  gsub("\\)","",result5$X3)
+  result5$X5 <- NULL
+  result5$X1 <- as.integer(as.character(result5$X1))
+  result5a <- head(result5[order(result5$X1, decreasing= T),],n = round(nrow(result5)*.20,0))
+  result5b <- head(result5[order(result5$X1, decreasing= F),],n = round(nrow(result5)*.20,0))
+  colnames(result5a) <- c("Student Count", "Year", "Department")
+  colnames(result5b) <- c("Student Count", "Year", "Department")
+  result5aplot <- ggplot(result5a, aes(x = Department, y = `Student Count`, fill = Year)) + geom_bar(stat = "identity", position = "dodge") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+  ggsave("Results5a.pdf", path = paste0(file_path,"results5/"))  
+  result5bplot <- ggplot(result5b, aes(x = Department, y = `Student Count`, fill = Year)) + geom_bar(stat = "identity", position = "dodge") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+  ggsave("Results5b.pdf", path = paste0(file_path,"results5/")) 
+  
+}
